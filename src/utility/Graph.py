@@ -1,5 +1,5 @@
 from utility.Node import Node
-
+import numpy as np
 
 class Graph:
     def __init__(self):
@@ -90,4 +90,26 @@ class Graph:
         rounded_hub = [round(value, 3) for value in hub_list]
 
         return rounded_authority, rounded_hub
+    
+    def get_pagerank_list(self):
+        pagerank_list = np.asarray([node.pagerank for node in self.nodes], dtype='float32')
+        return np.round(pagerank_list, 3)
+    
+    def transition_matrix(self):
+        size = len(self.nodes)
+        B = np.zeros((size, size))
+        E = np.zeros((size, size))
+        node_index = {node: i for i, node in enumerate(self.nodes)}
 
+        # Build the transition matrix B and the escape matrix E
+        for node in self.nodes:
+            idx = node_index[node]
+            if node.children:  # If the node has outgoing links
+                children_indices = [node_index[child] for child in node.children]
+                B[children_indices, idx] = 1.0 / len(node.children)
+            else:  # If the node is a dangling node (no outgoing links)
+                E[:, idx] = 1.0 / size  # Add escape probability to all nodes
+        
+        # Combine B and E to form the stochastic matrix M
+        M = B + E  # M will be used in the PageRank calculation
+        return M
