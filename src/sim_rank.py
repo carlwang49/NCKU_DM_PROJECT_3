@@ -1,7 +1,6 @@
 import numpy as np
 from utility.Graph import Graph
 from typing import List
-import time
 
 
 def initialize_similarity_matrix(num_nodes: int) -> np.ndarray:
@@ -46,7 +45,6 @@ def update_similarity_matrix(sim: np.ndarray, nodes: List, c: float) -> np.ndarr
                     new_sim[i][j] = round(
                         c * s_ij / (len(predecessors_i) * len(predecessors_j)), 3
                     )
-                    time.sleep(1)
     return new_sim
 
 
