@@ -1,4 +1,8 @@
 # Jupyter Notebook
 .ipynb_checkpoints
+
+# Related to MacOS
 .DS_Store
+
+# Related to Python
 __pycache__/
