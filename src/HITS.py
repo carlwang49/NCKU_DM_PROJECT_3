@@ -1,6 +1,5 @@
 from utility.Graph import Graph
 from utility.Node import Node
-from utility.utils import initialize_graph_from_file
 
 
 def HITS_per_iter(graph: Graph):
