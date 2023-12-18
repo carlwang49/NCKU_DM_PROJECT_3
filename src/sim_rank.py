@@ -1,8 +1,8 @@
 import numpy as np
-from utility.utils import initialize_graph_from_file
 from utility.Graph import Graph
 from typing import List
 import time
+
 
 def initialize_similarity_matrix(num_nodes: int) -> np.ndarray:
     """
@@ -15,6 +15,7 @@ def initialize_similarity_matrix(num_nodes: int) -> np.ndarray:
         np.ndarray: The initialized similarity matrix.
     """
     return np.identity(num_nodes)
+
 
 def update_similarity_matrix(sim: np.ndarray, nodes: List, c: float) -> np.ndarray:
     """
@@ -39,13 +40,17 @@ def update_similarity_matrix(sim: np.ndarray, nodes: List, c: float) -> np.ndarr
                 predecessors_j = [node_index[n] for n in node_j.parents]
 
                 if predecessors_i and predecessors_j:
-                    s_ij = sum(sim[u][v] for u in predecessors_i for v in predecessors_j)
-                    new_sim[i][j] = round(c * s_ij / (len(predecessors_i) * len(predecessors_j)), 3)
-                    print(new_sim)
+                    s_ij = sum(
+                        sim[u][v] for u in predecessors_i for v in predecessors_j
+                    )
+                    new_sim[i][j] = round(
+                        c * s_ij / (len(predecessors_i) * len(predecessors_j)), 3
+                    )
                     time.sleep(1)
     return new_sim
 
-def simrank(graph: Graph, c: float = 0.8, iterations: int = 10) -> np.ndarray:
+
+def sim_rank(graph: Graph, c: float = 0.8, iterations: int = 10) -> np.ndarray:
     """
     Calculate SimRank similarity matrix for nodes in a graph.
 
@@ -75,15 +80,3 @@ def simrank(graph: Graph, c: float = 0.8, iterations: int = 10) -> np.ndarray:
         sim = update_similarity_matrix(sim, nodes, c)
 
     return sim
-
-
-
-
-if __name__ == '__main__':
-
-    decay_factor = 0.7
-    iterations = 30
-    graph = initialize_graph_from_file('./inputs/graph_4.txt')
-
-    print(simrank(graph, decay_factor, iterations))
-

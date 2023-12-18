@@ -1,20 +1,50 @@
 from utility.Node import Node
 import numpy as np
 
+
 class Graph:
     def __init__(self):
+        """
+        Initialize a Graph object with an empty list of nodes.
+        """
         self.nodes = []
 
     def contains(self, num):
+        """
+        Check if the graph contains a node with the specified identifier.
+
+        Parameters:
+            num (int): Unique identifier of the node.
+
+        Returns:
+            bool: True if a node with the given identifier exists in the graph, False otherwise.
+        """
         return any(node.num == num for node in self.nodes)
 
     def normalize_auth_hub(self):
+        """
+        Normalize authority and hub scores of nodes in the graph.
+
+        The method normalizes authority and hub scores based on the sum of scores for all nodes.
+        """
         auth_sum = sum(node.auth for node in self.nodes)
         hub_sum = sum(node.hub for node in self.nodes)
 
         for node in self.nodes:
             node.auth /= auth_sum
             node.hub /= hub_sum
+
+    def get_pagerank(self):
+        """
+        Get the PageRank scores of nodes in the graph.
+
+        Returns:
+            np.ndarray: An array containing PageRank scores for each node in the graph.
+        """
+        pagerank_list = np.asarray(
+            [node.pagerank for node in self.nodes], dtype="float32"
+        )
+        return np.round(pagerank_list, 3)
 
     def find(self, num):
         """
@@ -90,15 +120,17 @@ class Graph:
         rounded_hub = [round(value, 3) for value in hub_list]
 
         return rounded_authority, rounded_hub
-    
-    def get_pagerank_list(self):
-        pagerank_list = np.asarray([node.pagerank for node in self.nodes], dtype='float32')
-        return np.round(pagerank_list, 3)
-    
+
     def transition_matrix(self):
+        """
+        Generate the transition matrix for the graph.
+
+        Returns:
+            np.ndarray: The transition matrix representing the probability of transitioning from one node to another.
+        """
         size = len(self.nodes)
-        B = np.zeros((size, size))
-        E = np.zeros((size, size))
+        B = np.zeros((size, size))  # Adjacency matrix for regular transitions
+        E = np.zeros((size, size))  # Escape matrix for dangling nodes
         node_index = {node: i for i, node in enumerate(self.nodes)}
 
         # Build the transition matrix B and the escape matrix E
@@ -109,7 +141,7 @@ class Graph:
                 B[children_indices, idx] = 1.0 / len(node.children)
             else:  # If the node is a dangling node (no outgoing links)
                 E[:, idx] = 1.0 / size  # Add escape probability to all nodes
-        
+
         # Combine B and E to form the stochastic matrix M
-        M = B + E  # M will be used in the PageRank calculation
+        M = B + E
         return M

@@ -37,28 +37,6 @@ def run_hits_algorithm(graph, num_iterations=100):
     Returns:
         None
     """
-    for iteration in range(num_iterations):
+    for _ in range(num_iterations):
         # Perform one iteration of the HITS algorithm on the graph
         HITS_per_iter(graph)
-
-        # Optionally display hub and authority values (commented out for brevity)
-        # graph.display_hub_auth()
-
-        # Optionally print iteration number (commented out for brevity)
-        # print(f"Iteration {iteration + 1} complete")
-
-
-if __name__ == "__main__":
-    # Set the number of iterations for the HITS algorithm
-    num_iterations = 100
-
-    # Initialize the graph from a file
-    graph = initialize_graph_from_file("./inputs/graph_4.txt")
-
-    # Run the HITS algorithm on the graph
-    run_hits_algorithm(graph, num_iterations)
-
-    # Retrieve and print the authority and hub values
-    auth_list, hub_list = graph.get_authority_hub_lists()
-    print("Authority values:", auth_list)
-    print("Hub values:", hub_list)

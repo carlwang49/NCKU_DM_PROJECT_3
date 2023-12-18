@@ -1,38 +1,52 @@
 import numpy as np
 from utility.Graph import Graph
-from utility.utils import initialize_graph_from_file
 
-def PageRank_one_iter(graph, d, is_init_page_rank):
+
+def page_rank_one_iteration(graph: Graph, d, is_init_page_rank):
+    """
+    Perform one iteration of the PageRank algorithm.
+
+    Args:
+        graph (Graph): The graph object.
+        d (float): The damping factor.
+        is_init_page_rank (bool): Whether it's the first iteration for initializing PageRank.
+
+    Returns:
+        np.ndarray: The updated PageRank values after one iteration.
+    """
     num_nodes = len(graph.nodes)
-    T = graph.transition_matrix()  # Transition matrix
+    transition_matrix = graph.transition_matrix()
     e = np.ones(num_nodes)  # Vector of ones
 
     if is_init_page_rank:
-        r = np.array([node.pagerank / num_nodes for node in graph.nodes])
-    
-    r = np.array([node.pagerank for node in graph.nodes])
+        current_page_rank = np.array(
+            [node.pagerank / num_nodes for node in graph.nodes]
+        )
+    else:
+        current_page_rank = np.array([node.pagerank for node in graph.nodes])
+
     # Calculate the new PageRank values
-    new_r = (d / num_nodes) * e + (1 - d) * T.dot(r)
+    new_page_rank = (d / num_nodes) * e + (1 - d) * transition_matrix.dot(
+        current_page_rank
+    )
 
     # Update the PageRank values in the graph nodes
     for i, node in enumerate(graph.nodes):
-        node.pagerank = new_r[i]
-
-def PageRank(graph, d, iteration=100):
-    for i in range(iteration):
-        is_init_page_rank = False
-        if i == 0:
-            is_init_page_rank = True
-        PageRank_one_iter(graph, d, is_init_page_rank)
+        node.pagerank = new_page_rank[i]
 
 
+def page_rank(graph: Graph, d, iterations=100):
+    """
+    Run the PageRank algorithm on the graph.
 
-if __name__ == '__main__':
+    Args:
+        graph (Graph): The graph object.
+        d (float): The damping factor.
+        iterations (int): The number of iterations.
 
-    iteration = 30
-    damping_factor = 0.1
-
-    graph = initialize_graph_from_file('./inputs/graph_2.txt')
-
-    PageRank(graph, damping_factor)
-    print(graph.get_pagerank_list())
+    Returns:
+        np.ndarray: The final PageRank values.
+    """
+    for i in range(iterations):
+        is_init_page_rank = i == 0
+        page_rank_one_iteration(graph, d, is_init_page_rank)

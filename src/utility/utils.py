@@ -18,10 +18,23 @@ def initialize_graph_from_file(file_path):
     # Create a new Graph object
     graph = Graph()
 
+    # Check if the file is space-separated
+    space_separated = any(" " in line for line in lines)
+
     # Populate the graph with parent-child relationships from the file
     for line in lines:
-        # Extract parent and child information from each line
-        parent, child = line.strip().split(",")
+        if space_separated:
+            # For space-separated files, split on whitespace
+            # Split the line into words
+            words = line.split()
+
+            # Extract parent and child information
+            parent = words[0]
+            child = words[-1]
+        else:
+            # For comma-separated files, split on comma
+            parent, child = line.strip().split(",")
+
         graph.add_edge(parent, child)
 
     # Sort the nodes within the graph
