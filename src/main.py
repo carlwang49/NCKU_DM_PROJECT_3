@@ -53,8 +53,8 @@ def main():
 
     elif args.algorithm == "hits":
         # Run the HITS algorithm
-        num_iterations = args.iterations or 100
-        run_hits_algorithm(graph, num_iterations)
+        iteration = args.iterations or 30
+        run_hits_algorithm(graph, iteration)
 
         # Retrieve and print authority and hub values
         auth_list, hub_list = graph.get_authority_hub_lists()
@@ -92,8 +92,8 @@ def main():
     elif args.algorithm == "simrank":
         # Run the SimRank algorithm
         decay_factor = args.decay_factor or 0.7
-        iterations = args.iterations or 30
-        simrank_result = sim_rank(graph, decay_factor, iterations)
+        iteration = args.iterations or 30
+        simrank_result = sim_rank(graph, decay_factor, iteration)
 
         # Print to STDOUT
         print("Decay Factor:")
